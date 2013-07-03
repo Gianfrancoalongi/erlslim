@@ -30,10 +30,12 @@ decode_elements(N, [A, B, C, D, E, F, $:|T]) ->
 to_command(List) ->
     lists:map(fun make_command/1, List).
 
-make_command([_,"make","scriptTableActor",X]) ->
-    #make{actor = list_to_atom(X)};
-make_command([_,"call","scriptTableActor",F|Args]) ->
-    #call{function = list_to_atom(F),
+make_command([ID,"make","scriptTableActor",X]) ->
+    #make{id = ID,
+	  actor = list_to_atom(X)};
+make_command([ID,"call","scriptTableActor",F|Args]) ->
+    #call{id = ID,
+	  function = list_to_atom(F),
 	  args = [ list_to_atom(A) || A <- Args ]
 	 }.
 		  
