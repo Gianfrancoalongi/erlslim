@@ -21,16 +21,20 @@ decode_in_list([A,B,C,D,E,F,$:|T]) ->
 decode_elements(1, Data) ->
     [ decode_2(Data) ];
 decode_elements(N, [A, B, C, D, E, F, $:|T]) ->
-    Taken = string:sub_string(T, 1,list_to_integer([A,B,C,D,E,F])),
-    Rest = string:sub_string(T, 2 + list_to_integer([A,B,C,D,E,F])),
+    Length = list_to_integer([A,B,C,D,E,F]),
+    Taken = string:sub_string(T, 1, Length),
+    Rest = string:sub_string(T, 2 + Length),
     [ decode_2([A,B,C,D,E,F,$:|Taken]) | decode_elements(N-1, Rest) ].
 
-to_command([]) -> [];
-to_command([ [_,"make","scriptTableActor",X] | T ]) ->
-    [ #make{actor = list_to_atom(X)} | to_command(T) ];
-to_command([ [_,"call","scriptTableActor",F|Args]| T]) ->
-    [ #call{function = list_to_atom(F),
-	    args = [ list_to_atom(A) || A <- Args ]
-	   } | to_command(T) ].
+
+to_command(List) ->
+    lists:map(fun make_command/1, List).
+
+make_command([_,"make","scriptTableActor",X]) ->
+    #make{actor = list_to_atom(X)};
+make_command([_,"call","scriptTableActor",F|Args]) ->
+    #call{function = list_to_atom(F),
+	  args = [ list_to_atom(A) || A <- Args ]
+	 }.
 		  
 
