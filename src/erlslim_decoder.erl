@@ -5,7 +5,7 @@
 decode(Input) ->
     to_command(decode_2(Input)).
 
-decode_2([A,B,C,D,E,F,$:|R]) ->
+decode_2([_,_,_,_,_,_,$:|R]) ->
     case R of
 	[$[|T] ->
 	    [$],$:|T2] = lists:reverse(T),
@@ -27,4 +27,10 @@ decode_elements(N, [A, B, C, D, E, F, $:|T]) ->
 
 to_command([]) -> [];
 to_command([ [_,"make","scriptTableActor",X] | T ]) ->
-    [ #make{actor = list_to_atom(X)} | to_command(T) ].
+    [ #make{actor = list_to_atom(X)} | to_command(T) ];
+to_command([ [_,"call","scriptTableActor",F|Args]| T]) ->
+    [ #call{function = list_to_atom(F),
+	    args = [ list_to_atom(A) || A <- Args ]
+	   } | to_command(T) ].
+		  
+
