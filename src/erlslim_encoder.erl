@@ -7,7 +7,7 @@ encode(Results) ->
     merge_to_one_result(Encoded_results).
 
 encode_result(#result{}=R) ->
-    String_result = atom_to_list(R#result.result),
+    String_result = ensure_as_string(R#result.result),
     Formatted = lists:flatten(io_lib:format(":[000002:~6..0B:~s:~6..0B:~s:]",
 					    [length(R#result.id),
 					     R#result.id,
@@ -27,3 +27,8 @@ merge_to_one_result(Encoded_results) ->
 	      Base_format_string,
 	      Encoded_results),
     lists:flatten(io_lib:format("~6..0B:~s:]",[length(Total),Total])).
+
+ensure_as_string(Result) when is_atom(Result) ->
+    atom_to_list(Result);
+ensure_as_string(Result) ->
+    lists:flatten(io_lib:format("~p",[Result])).

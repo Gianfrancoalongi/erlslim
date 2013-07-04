@@ -8,6 +8,11 @@ encode_one_result_test() ->
 		 erlslim_encoder:encode(Res) 
 		).
 
-
+encode_pid_result_test() ->
+    Pid = list_to_pid("<0.40.0>"),
+    Res = [#result{id = "scriptTable_0_0", result = Pid}],
+    ?assertEqual("000063:[000001:000049:[000002:000015:scriptTable_0_0:000008:<0.40.0>:]:]",
+		 erlslim_encoder:encode(Res) 
+		).
 
 					
