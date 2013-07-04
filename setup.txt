@@ -1,9 +1,10 @@
-module add erlang/otp_R15B03
-
 java -jar fitnesse-standalone.jar -p 5055
 
 create test page, set test page text to 
-   !define TEST_SYSTEM {slim}
-   !path /home/egiaalo/ThirteenthDay/erlslim_v0.3/ebin/
-   !define COMMAND_PATTERN {erl -noshell -pa %p -s erlslim start -slim_port}
 
+    !define TEST_SYSTEM {slim}
+    !path /home/egiaalo/ThirteenthDay/erlslim_v0.3/ebin/
+    !define COMMAND_PATTERN {erl -noshell -pa %p -s erlslim start -slim_port}
+
+    | script | erlslim_demo_module |
+    | a process named | Bob | is started |
