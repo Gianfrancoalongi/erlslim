@@ -8,14 +8,14 @@ encode(Results) ->
 
 encode_result(#result{}=R) ->
     String_result = ensure_as_string(R#result.result),
-    Formatted = lists:flatten(io_lib:format(":[000002:~6..0B:~s:~6..0B:~s:]",
+    Formatted = lists:flatten(io_lib:format("[000002:~6..0B:~s:~6..0B:~s:]",
 					    [length(R#result.id),
 					     R#result.id,
 					     length(String_result),
 					     String_result
 					    ])),
     Size = length(Formatted),
-    lists:flatten(io_lib:format("~6..0B~s",[Size,Formatted])).
+    lists:flatten(io_lib:format("~6..0B:~s",[Size,Formatted])).
 
 merge_to_one_result(Encoded_results) ->
     Amount_of_elements = length(Encoded_results),
@@ -25,8 +25,8 @@ merge_to_one_result(Encoded_results) ->
 		      lists:flatten(io_lib:format("~s:~s",[Format_string,Encoded]))
 	      end,
 	      Base_format_string,
-	      Encoded_results),
-    lists:flatten(io_lib:format("~6..0B:~s:]",[length(Total),Total])).
+	      Encoded_results)++":]",
+    lists:flatten(io_lib:format("~6..0B:~s",[length(Total),Total])).
 
 ensure_as_string(Result) when is_atom(Result) ->
     atom_to_list(Result);

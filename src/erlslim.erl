@@ -21,9 +21,10 @@ handle_command(ASock, Input) ->
     Commands = erlslim_decoder:decode(Input),
     Result = erlslim_command:execute(Commands),
     Out = erlslim_encoder:encode(Result),
-    io:format("command:~p~nresult:~p~nout:~p~n",[Commands,
+    file:write_file("/tmp/a.txt",[io_lib:format("command:~p~nresult:~p~nout:~p~n",
+						[Commands,
 						 Result,
 						 Out
-						]),
+						])]),
     gen_tcp:send(ASock,Out).
 
