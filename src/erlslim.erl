@@ -18,6 +18,12 @@ start() ->
 handle_command(_, "000003:bye") ->
     io:format("BYE~n",[]);
 handle_command(ASock, Input) ->
-    io:format("command: ~p ~n",[erlslim_decoder:decode(Input)]),
-    gen_tcp:send(ASock,"000019:[000001:000002:OK:]").
+    Commands = erlslim_decoder:decode(Input),
+    Result = erlslim_command:execute(Commands),
+    Out = erlslim_encoder:encode(Result),
+    io:format("command:~p~nresult:~p~nout:~p~n",[Commands,
+						 Result,
+						 Out
+						]),
+    gen_tcp:send(ASock,Out).
 
