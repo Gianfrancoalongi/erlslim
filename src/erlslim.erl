@@ -48,7 +48,7 @@ receive_slim_request(Data) ->
     Data#data{request = Received}.
 
 handle_request(Data) ->
-    Res = erlslim_commands:execute(erlslim_decoder:decode(Data#data.request)),
+    Res = erlslim_command:execute(erlslim_decoder:decode(Data#data.request)),
     Data#data{result = Res}.
 
 send_response(Data) ->
