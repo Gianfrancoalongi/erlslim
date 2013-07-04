@@ -1,8 +1,23 @@
 -module(erlslim_demo_module).
--export([aProcessNamedIsStarted/1]).
+-export([aProcessNamedIsStarted/1,
+	 thatTheProcessNamedHasAliveStatus/1
+	]).
 
 aProcessNamedIsStarted(Name) ->
-    spawn_link(
+    spawn(
       fun() ->
-	      register(Name,self())
+	      register(Name,self()),
+	      loop()
       end).
+
+
+thatTheProcessNamedHasAliveStatus(Name) ->
+    (undefined =/= whereis(Name)) andalso
+	is_process_alive(whereis(Name)).
+
+
+loop() ->
+    receive
+	stop ->
+	    ok
+    end.

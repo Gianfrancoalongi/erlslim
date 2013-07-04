@@ -1,7 +1,7 @@
 -module(erlslim).
 -export([start/0]).
 -define(VERSION,"0.3").
--record(data,{lsock, asock, request, result}).
+-record(data,{lsock, asock, request, result, reply}).
 
 start() -> 
     Steps = [fun start_slim_server/0,
@@ -21,6 +21,7 @@ run_(Steps) ->
 run([],_) ->
     [];
 run([Step|T],State) ->
+    log_state_to_file(State),
     case erlang:fun_info(Step,arity) of
 	{arity,1} ->
 	    run(T,Step(State));
@@ -51,8 +52,9 @@ handle_request(Data) ->
     Data#data{result = Res}.
 
 send_response(Data) ->
-    gen_tcp:send(Data#data.asock,erlslim_encoder:encode(Data#data.result)),
-    Data.
+    EncodedReply = erlslim_encoder:encode(Data#data.result),
+    gen_tcp:send(Data#data.asock, EncodedReply),
+    Data#data{reply = EncodedReply}.
 
 close_connections(Data) ->
     gen_tcp:close(Data#data.asock),
@@ -60,3 +62,9 @@ close_connections(Data) ->
 
 exit_with_code_zero() ->
     exit(0).
+
+log_state_to_file(State) ->
+    file:write_file("/tmp/erlslim.log",
+		    io_lib:format("~p~n",[State]), 
+		    [append]).
+  
