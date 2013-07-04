@@ -1,30 +1,62 @@
 -module(erlslim).
 -export([start/0]).
 -define(VERSION,"0.3").
+-record(data,{lsock, asock, request, result}).
 
-start() ->    
+start() -> 
+    Steps = [fun start_slim_server/0,
+	     fun accept_incoming_connection/1,
+	     fun send_slim_protocol_version/1,
+	     fun receive_slim_request/1,
+	     fun handle_request/1,
+	     fun send_response/1,
+	     fun close_connections/1,
+	     fun exit_with_code_zero/0
+	    ],
+    run_(Steps).
+
+run_(Steps) ->
+    run(Steps,undefined).
+
+run([],_) ->
+    [];
+run([Step|T],State) ->
+    case erlang:fun_info(Step,arity) of
+	{arity,1} ->
+	    run(T,Step(State));
+	{arity,0} ->
+	    run(T,Step())
+    end.
+
+start_slim_server() ->   
     {ok, [[Port]]} = init:get_argument('slim_port'),
-    {ok, LSock} = gen_tcp:listen(list_to_integer(Port),[{active,false},
-							{reuseaddr,true}]),
-    {ok, ASock} = gen_tcp:accept(LSock),
-    gen_tcp:send(ASock,"Slim -- V"++?VERSION++"\n"),
-    {ok, Data} = gen_tcp:recv(ASock, 0),
-    io:format("Received:~p~n",[Data]),
-    handle_command(ASock, Data),
-    gen_tcp:close(ASock),
-    gen_tcp:close(LSock),
+    IPort = list_to_integer(Port),
+    {ok, LSock} = gen_tcp:listen(IPort,[{active,false},{reuseaddr,true}]),
+    #data{lsock = LSock}.
+
+accept_incoming_connection(Data) ->    
+    {ok, ASock} = gen_tcp:accept(Data#data.lsock),
+    Data#data{asock = ASock}.
+
+send_slim_protocol_version(Data) ->
+    gen_tcp:send(Data#data.asock,"Slim -- V"++?VERSION++"\n"),
+    Data.
+
+receive_slim_request(Data) ->
+    {ok, Received} = gen_tcp:recv(Data#data.asock, 0),
+    Data#data{request = Received}.
+
+handle_request(Data) ->
+    Res = erlslim_commands:execute(erlslim_decoder:decode(Data#data.request)),
+    Data#data{result = Res}.
+
+send_response(Data) ->
+    gen_tcp:send(Data#data.asock,erlslim_encoder:encode(Data#data.result)),
+    Data.
+
+close_connections(Data) ->
+    gen_tcp:close(Data#data.asock),
+    gen_tcp:close(Data#data.lsock).
+
+exit_with_code_zero() ->
     exit(0).
-
-handle_command(_, "000003:bye") ->
-    io:format("BYE~n",[]);
-handle_command(ASock, Input) ->
-    Commands = erlslim_decoder:decode(Input),
-    Result = erlslim_command:execute(Commands),
-    Out = erlslim_encoder:encode(Result),
-    file:write_file("/tmp/a.txt",[io_lib:format("command:~p~nresult:~p~nout:~p~n",
-						[Commands,
-						 Result,
-						 Out
-						])]),
-    gen_tcp:send(ASock,Out).
-
