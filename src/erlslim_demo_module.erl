@@ -1,14 +1,22 @@
 -module(erlslim_demo_module).
 -export([aProcessNamedIsStarted/1,
-	 thatTheProcessNamedHasAliveStatus/1
+	 thatTheProcessNamedHasAliveStatus/1,
+	 sendStopMessageToTheProcessNamed/1
 	]).
 
 aProcessNamedIsStarted(Name) ->
+    Parent = self(),
+    Ref = make_ref(),
     spawn(
       fun() ->
 	      register(Name,self()),
+	      Parent !  {started, Ref},
 	      loop()
-      end).
+      end),
+    receive
+	{started, Ref} ->
+	    ok
+    end.
 
 
 thatTheProcessNamedHasAliveStatus(Name) ->
@@ -16,8 +24,16 @@ thatTheProcessNamedHasAliveStatus(Name) ->
 	is_process_alive(whereis(Name)).
 
 
+sendStopMessageToTheProcessNamed(Name) ->
+    Pid = whereis(Name),
+    Pid ! {stop,self()},
+    receive
+	{ok,Pid} ->
+	    ok
+    end.
+
 loop() ->
     receive
-	stop ->
-	    ok
+	{stop,From} ->
+	    From ! {ok,self()}
     end.

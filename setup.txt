@@ -8,3 +8,6 @@ create test page, set test page text to
 
     | script | erlslim_demo_module |
     | a process named | Bob | is started |
+    |check|that the process named |Bob|has alive status|true|
+    | send stop message to the process named | Bob|
+    |check|that the process named|Bob|has alive status|false|
