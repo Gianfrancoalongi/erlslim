@@ -12,8 +12,8 @@ execute_single_command(#make{}=C) ->
 	    result='OK'};
 execute_single_command(#call{}=C) ->
     #result{id=C#call.id,
-	    result=apply(get(module),
-			 C#call.function,
-			 C#call.args)
+	    result=catch apply(get(module),
+			       C#call.function,
+			       C#call.args)
 	   }.
 
