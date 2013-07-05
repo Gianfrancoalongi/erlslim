@@ -1,8 +1,12 @@
 -module(erlslim_demo_module).
 -export([aProcessNamedIsStarted/1,
 	 thatTheProcessNamedHasAliveStatus/1,
-	 sendStopMessageToTheProcessNamed/1
+	 sendStopMessageToTheProcessNamed/1,
+	 start_link/0
 	]).
+
+start_link() ->
+    ok.
 
 aProcessNamedIsStarted(Name) ->
     Parent = self(),
