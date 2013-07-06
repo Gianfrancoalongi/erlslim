@@ -8,5 +8,6 @@ no_commands_test() ->
 
 make_command_test() ->
     Commands = [#make{id = "make_command_test", actor = lists}],
-    ?assertEqual([#result{id = "make_command_test", result = lists}],
-		 erlslim_command:execute(Commands)).
+    ?assertEqual([#result{id = "make_command_test", result = ok}],
+		 erlslim_command:execute(Commands)),
+    ?assertEqual(lists,get(module)).

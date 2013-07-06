@@ -8,7 +8,7 @@ execute(Commands) ->
 
 execute_single_command(#make{}=C) ->    
     put(module, C#make.actor),
-    store_and_log_result(C#make.id, C#make.actor);
+    store_and_log_result(C#make.id, ok);
 
 execute_single_command(#call{}=C) ->
     Res = (catch apply(get(module), C#call.function, C#call.args)),
