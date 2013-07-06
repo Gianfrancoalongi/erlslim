@@ -14,8 +14,8 @@ decode_2([_,_,_,_,_,_,$:|R]) ->
 	    R
     end.
 
-decode_in_list([A,B,C,D,E,F,$:|T]) ->
-    List_elements = list_to_integer([A,B,C,D,E,F]),
+decode_in_list(Input) ->
+    {List_elements, T} = length_and_rest(Input),
     decode_elements(List_elements,T).
 
 decode_elements(1, Data) ->
@@ -25,7 +25,6 @@ decode_elements(N, [A, B, C, D, E, F, $:|T]) ->
     Taken = string:sub_string(T, 1, Length),
     Rest = string:sub_string(T, 2 + Length),
     [ decode_2([A,B,C,D,E,F,$:|Taken]) | decode_elements(N-1, Rest) ].
-
 
 to_command(List) ->
     lists:map(fun make_command/1, List).
@@ -38,5 +37,6 @@ make_command([ID,"call","scriptTableActor",F|Args]) ->
 	  function = list_to_atom(F),
 	  args = [ list_to_atom(A) || A <- Args ]
 	 }.
-		  
 
+length_and_rest([A,B,C,D,E,F,$:|T]) ->
+    {list_to_integer([A,B,C,D,E,F]),T}.
