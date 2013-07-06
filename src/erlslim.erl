@@ -5,8 +5,8 @@
 -record(data,{lsock, asock, request, result, reply}).
 
 start() -> 
-    Steps = [fun start_slim_server/0,
-	     fun clear_log/1,
+    Steps = [fun clear_log/0,
+	     fun open_listening_socket/0,	     
 	     fun accept_incoming_connection/1,
 	     fun send_slim_protocol_version/1,
 	     fun receive_slim_request/1,
@@ -17,15 +17,14 @@ start() ->
 	    ],
     seq:run_(Steps).
 
-start_slim_server() ->   
+open_listening_socket() ->
     {ok, [[Port]]} = init:get_argument('slim_port'),
     IPort = list_to_integer(Port),
     {ok, LSock} = gen_tcp:listen(IPort,[{active,false},{reuseaddr,true}]),
     #data{lsock = LSock}.
 
-clear_log(Data) ->
-    file:write_file(?LOG,""),
-    Data.
+clear_log() ->
+    file:write_file(?LOG,"").
 
 accept_incoming_connection(Data) ->    
     {ok, ASock} = gen_tcp:accept(Data#data.lsock),

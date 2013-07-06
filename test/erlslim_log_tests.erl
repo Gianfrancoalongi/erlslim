@@ -17,6 +17,21 @@ reset_log_file_test() ->
     erlslim_log:set_log_path(Path),
     erlslim_log:reset_log_file(),
     ?assertEqual({ok, <<>>} , file:read_file(Path)).
+
+log_result_to_file_test() ->
+    Path = "/tmp/erlslim.log",
+    
+    erlslim_log:set_log_path(Path),
+    erlslim_log:reset_log_file(),
+
+    ID = "erlslim_log_ID",
+    Result = [1,2,3],
+    erlslim_log:log(ID, Result),
+    {ok, Bin} = file:read_file(Path),
+    [TimeStamp,Logged] = string:tokens(binary_to_list(Bin),"|"),
+    Expected = lists:flatten(io_lib:format("~s:~p\n",[ID,Result])),
+    ?assertEqual(Expected, Logged).
+    
 	
 	
     
