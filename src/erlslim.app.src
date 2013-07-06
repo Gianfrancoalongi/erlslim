@@ -7,6 +7,5 @@
                   kernel,
                   stdlib
                  ]},
-  {mod, { erlslim_app, []}},
   {env, []}
  ]}.
