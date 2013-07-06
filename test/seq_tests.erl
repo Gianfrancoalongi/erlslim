@@ -8,4 +8,11 @@ no_steps_sequences_test() ->
 data_generation_in_seq_test() ->
     Steps = [fun() -> 1 end],
     ?assertEqual(1, seq:run_(Steps)).
+		 
+data_consumer_in_seq_test() ->    
+    Steps = [fun() -> 1 end,
+	     fun(X) -> X+1 end
+	    ],
+    ?assertEqual(2, seq:run_(Steps)).
+		      
 		     
