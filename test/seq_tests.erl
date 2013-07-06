@@ -3,4 +3,9 @@
 
 no_steps_sequences_test() ->
     Steps = [],
-    ?assertEqual([], seq:run_(Steps)).
+    ?assertEqual(undefined, seq:run_(Steps)).
+
+data_generation_in_seq_test() ->
+    Steps = [fun() -> 1 end],
+    ?assertEqual(1, seq:run_(Steps)).
+		     

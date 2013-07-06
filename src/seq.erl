@@ -4,8 +4,8 @@
 run_(Steps) ->
     run(Steps,undefined).
 
-run([],_) ->
-    [];
+run([],State) ->
+    State;
 run([Step|T],State) ->
     case erlang:fun_info(Step,arity) of
 	{arity,1} ->
