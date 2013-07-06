@@ -6,6 +6,8 @@
 	 ]).
 -define(DEFAULT_LOG_PATH,"/tmp/default_erlslim.log").
 
+set_log_path(error) -> 
+    application:set_env(erlslim, log_path, ?DEFAULT_LOG_PATH);
 set_log_path(Path) ->
     application:set_env(erlslim, log_path, Path).
 
