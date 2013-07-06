@@ -15,21 +15,7 @@ start() ->
 	     fun close_connections/1,
 	     fun exit_with_code_zero/0
 	    ],
-    run_(Steps).
-
-run_(Steps) ->
-    run(Steps,undefined).
-
-run([],_) ->
-    [];
-run([Step|T],State) ->
-    log_state_to_file(State),
-    case erlang:fun_info(Step,arity) of
-	{arity,1} ->
-	    run(T,Step(State));
-	{arity,0} ->
-	    run(T,Step())
-    end.
+    seq:run_(Steps).
 
 start_slim_server() ->   
     {ok, [[Port]]} = init:get_argument('slim_port'),
@@ -70,10 +56,4 @@ close_connections(Data) ->
     gen_tcp:close(Data#data.lsock).
 
 exit_with_code_zero() ->
-    exit(0).
-
-log_state_to_file(State) ->
-    file:write_file(?LOG,
-		    io_lib:format("~p~n",[State]), 
-		    [append]).
-  
+    exit(0).  
