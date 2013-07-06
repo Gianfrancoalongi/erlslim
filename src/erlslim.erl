@@ -50,11 +50,11 @@ send_slim_protocol_version(Data) ->
     Data.
 
 receive_slim_request(Data) ->
-    {ok, TotalSize} = gen_tcp:recv(Data#data.asock, 6),
-    Bytes = list_to_integer(TotalSize),
+    {ok, [A,B,C,D,E,F]=TotalSize} = gen_tcp:recv(Data#data.asock, 6),
     {ok,_} = gen_tcp:recv(Data#data.asock,1),
+    Bytes = list_to_integer(TotalSize),
     {ok, Received} = gen_tcp:recv(Data#data.asock, Bytes),
-    Data#data{request = TotalSize++":"++Received}.
+    Data#data{request = [A,B,C,D,E,F,$:|Received]}.
 
 handle_request(Data) ->
     Res = erlslim_command:execute(erlslim_decoder:decode(Data#data.request)),
