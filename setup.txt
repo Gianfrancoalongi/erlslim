@@ -11,3 +11,5 @@ create test page, set test page text to
 |check|that the process named |Bob|has alive status|true|
 | send stop message to the process named | Bob|
 |check|that the process named|Bob|has alive status|false|
+
+remember compile and put erlslim_demo_module into ebin/
