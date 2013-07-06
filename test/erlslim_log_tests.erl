@@ -10,7 +10,7 @@ set_default_path_when_error_is_path_argument_test() ->
     Path = "/tmp/default_erlslim.log",
     erlslim_log:set_log_path(error),
     ?assertEqual(Path, erlslim_log:get_log_path()).
- 
+
 get_log_path_without_setting_it_returns_default_tmp_test() ->
     Path = "/tmp/default_erlslim.log",
     ok = application:unset_env(erlslim, log_path),
