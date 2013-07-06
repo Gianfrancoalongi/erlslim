@@ -7,5 +7,9 @@ set_log_path(Path) ->
     application:set_env(erlslim, log_path, Path).
 
 get_log_path() ->
-    {ok, Path } = application:get_env(erlslim, log_path),
-    Path.
+    case application:get_env(erlslim, log_path) of
+	{ok, Path } ->
+	    Path;
+	undefined ->
+	    "/tmp/default_erlslim.log"
+    end.
