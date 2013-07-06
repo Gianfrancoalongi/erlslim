@@ -20,11 +20,11 @@ decode_in_list(Input) ->
 
 decode_elements(1, Data) ->
     [ decode_2(Data) ];
-decode_elements(N, [A, B, C, D, E, F, $:|T]) ->
-    Length = list_to_integer([A,B,C,D,E,F]),
-    Taken = string:sub_string(T, 1, Length),
-    Rest = string:sub_string(T, 2 + Length),
-    [ decode_2([A,B,C,D,E,F,$:|Taken]) | decode_elements(N-1, Rest) ].
+decode_elements(N, Data) ->
+    {Length, Rest}  = length_and_rest(Data),
+    To_be_decoded = string:sub_string(Rest, 2 + Length),
+    Sub_element = string:sub_string(Data,1, Length + 7),
+    [ decode_2(Sub_element) | decode_elements(N-1, To_be_decoded) ].
 
 to_command(List) ->
     lists:map(fun make_command/1, List).
