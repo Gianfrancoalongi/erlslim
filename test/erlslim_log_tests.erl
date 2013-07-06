@@ -29,7 +29,7 @@ log_result_to_file_test() ->
     erlslim_log:log(ID, Result),
     {ok, Bin} = file:read_file(Path),
     [TimeStamp,Logged] = string:tokens(binary_to_list(Bin),"|"),
-    Expected = lists:flatten(io_lib:format("~s:~p\n",[ID,Result])),
+    Expected = "erlslim_log_ID:[1,2,3]\n",
     ?assertEqual(Expected, Logged).
     
 	
