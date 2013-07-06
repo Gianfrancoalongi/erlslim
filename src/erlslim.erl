@@ -1,11 +1,10 @@
 -module(erlslim).
 -export([start/0]).
--define(LOG,"/tmp/erlslim.log").
 -define(VERSION,"0.3").
 -record(data,{lsock, asock, request, result, reply}).
 
 start() -> 
-    Steps = [fun clear_log/0,
+    Steps = [fun set_log_path_and_reset_log_file/0,
 	     fun open_listening_socket/0,	     
 	     fun accept_incoming_connection/1,
 	     fun send_slim_protocol_version/1,
@@ -23,8 +22,9 @@ open_listening_socket() ->
     {ok, LSock} = gen_tcp:listen(IPort,[{active,false},{reuseaddr,true}]),
     #data{lsock = LSock}.
 
-clear_log() ->
-    file:write_file(?LOG,"").
+set_log_path_and_reset_log_file() ->
+    erlslim_log:set_log_path(init:get_argument('slim_log')),
+    erlslim_log:reset_log_file().
 
 accept_incoming_connection(Data) ->    
     {ok, ASock} = gen_tcp:accept(Data#data.lsock),

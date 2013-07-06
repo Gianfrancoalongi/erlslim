@@ -1,6 +1,5 @@
 -module(erlslim_command).
 -include("erlslim.hrl").
--define(LOG,"/tmp/erlslim.log").
 -export([execute/1]).
 
 execute(Commands) ->
@@ -15,6 +14,6 @@ execute_single_command(#call{}=C) ->
     store_and_log_result(C#call.id, Res).
 
 store_and_log_result(Id, Res) ->
-    file:write_file(?LOG,io_lib:format("~p:~p:~p|~s:~p~n",[date(),time(),now(),Id,Res]),[append]),
+    erlslim_log:log(Id, Res),
     #result{id = Id, result = Res}.
     
