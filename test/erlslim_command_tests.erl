@@ -23,3 +23,7 @@ call_command_test() ->
 		  ],
 		 erlslim_command:execute(Commands)).
     
+bye_test() ->
+    Command = #bye{id = "erlslim_server"},
+    ?assertEqual(#result{id = "erlslim_server", result = ok},
+		  erlslim_command:execute(Command)).

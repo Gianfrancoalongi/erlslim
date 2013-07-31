@@ -5,3 +5,4 @@
 	      args :: [ atom() | string() ]}).
 -record(result,{id :: string(),
 		result :: term() }).
+-record(bye,{id :: string()}).

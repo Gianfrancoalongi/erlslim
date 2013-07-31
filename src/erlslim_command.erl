@@ -2,6 +2,9 @@
 -include("erlslim.hrl").
 -export([execute/1]).
 
+execute(#bye{}=C) ->
+    store_and_log_result(C#bye.id, ok);
+
 execute(Commands) ->
     lists:map(fun execute_single_command/1, Commands).
 

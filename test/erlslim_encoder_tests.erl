@@ -15,4 +15,7 @@ encode_pid_result_test() ->
 		 erlslim_encoder:encode(Res) 
 		).
 
-					
+encode_bye_result_test() ->					
+    Res = #result{id = "erlslim_server", result = ok},
+    ?assertEqual("000041:[000002:000014:erlslim_server:000002:ok:]", 
+		 erlslim_encoder:encode(Res)).

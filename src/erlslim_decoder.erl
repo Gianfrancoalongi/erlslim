@@ -2,6 +2,8 @@
 -include("erlslim.hrl").
 -export([decode/1]).
 
+decode("000003:bye") ->
+    #bye{id = "erlslim_server"};
 decode(Input) ->
     to_command(decode_2(Input)).
 
@@ -29,10 +31,10 @@ decode_elements(N, Data) ->
 to_command(List) ->
     lists:map(fun make_command/1, List).
 
-make_command([ID,"make","scriptTableActor",X]) ->
+make_command([ID,"make",_,X]) ->
     #make{id = ID,
 	  actor = list_to_atom(X)};
-make_command([ID,"call","scriptTableActor",F|Args]) ->
+make_command([ID,"call",_,F|Args]) ->
     #call{id = ID,
 	  function = list_to_atom(F),
 	  args = [ list_to_atom(A) || A <- Args ]

@@ -2,6 +2,8 @@
 -include("erlslim.hrl").
 -export([encode/1]).
 
+encode(#result{}=R) ->
+    encode_result(R);
 encode(Results) ->
     Encoded_results = lists:map(fun encode_result/1, Results),
     merge_to_one_result(Encoded_results).

@@ -17,5 +17,8 @@ decode_two_lines_test() ->
 			args = ['Bob']}
 		 ], erlslim_decoder:decode(SlimLine)).
     
-
-
+decode_bye_test() ->
+    SlimLine = "000003:bye",
+    ?assertEqual(#bye{id = "erlslim_server"}, 
+		 erlslim_decoder:decode(SlimLine)).
+    
