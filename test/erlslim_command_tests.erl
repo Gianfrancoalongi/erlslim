@@ -27,3 +27,20 @@ bye_test() ->
     Command = #bye{id = "erlslim_server"},
     ?assertEqual(#result{id = "erlslim_server", result = ok},
 		  erlslim_command:execute(Command)).
+
+
+call_and_assign_test() ->
+    Commands = [#make{id = "cas_1", actor = string},
+		#call_and_assign{id = "cas_2",
+				 call = #call{id = "cas_2",
+					      function = strip,
+					      args = [" b "]},
+				 variable = stripped
+				 }
+	       ],
+    ?assertEqual([#result{id = "cas_1", result = ok},
+		  #result{id = "cas_2", result = "b"}
+		  ],
+		 erlslim_command:execute(Commands)),
+    ?assertEqual("b", erlslim_command:get_symbol(stripped)).
+			  

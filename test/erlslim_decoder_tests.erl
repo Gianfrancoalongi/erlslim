@@ -22,3 +22,19 @@ decode_bye_test() ->
     ?assertEqual(#bye{id = "erlslim_server"}, 
 		 erlslim_decoder:decode(SlimLine)).
     
+decode_call_and_assign_test() ->
+    SlimLine = "000243:[000002:"
+	"000096:[000004:000016:scriptTable_13_0:000004:make:000016:scriptTableActor:000019:erlslim_demo_module:]:"
+	"000122:[000005:000016:scriptTable_13_1:000013:callAndAssign:000008:Variable:000016:scriptTableActor:000020:getSystemTimeAndDate:]:"
+	"]",
+    ?assertEqual([#make{id = "scriptTable_13_0",
+			actor = erlslim_demo_module},
+		  #call_and_assign{id = "scriptTable_13_1",
+				   call = #call{id = "scriptTable_13_1",
+						function = getSystemTimeAndDate,
+						args = []},
+				   variable = 'Variable'
+				   }
+		  ],
+		 erlslim_decoder:decode(SlimLine)).
+ 

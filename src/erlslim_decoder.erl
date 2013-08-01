@@ -38,7 +38,13 @@ make_command([ID,"call",_,F|Args]) ->
     #call{id = ID,
 	  function = list_to_atom(F),
 	  args = [ list_to_atom(A) || A <- Args ]
-	 }.
+	 };
+make_command([ID,"callAndAssign",Variable|Call]) ->
+    #call_and_assign{id = ID,
+		     call = make_command([ID,"call"|Call]),
+		     variable = list_to_atom(Variable)
+		    }.
+
 
 length_and_rest([A,B,C,D,E,F,$:|T]) ->
     {list_to_integer([A,B,C,D,E,F]),T}.
