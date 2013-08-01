@@ -51,7 +51,6 @@ receive_slim_request(Data) ->
     {ok,_} = gen_tcp:recv(Data#data.asock,1),
     Bytes = list_to_integer(TotalSize),
     {ok, Received} = gen_tcp:recv(Data#data.asock, Bytes),
-    io:format("RECEIVED:~p~n",[A,B,C,D,E,F,$:|Received]),
     Data#data{request = [A,B,C,D,E,F,$:|Received],
 	      bye = Received == "bye"
 	     }.
