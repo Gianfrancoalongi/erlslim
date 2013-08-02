@@ -44,3 +44,22 @@ call_and_assign_test() ->
 		 erlslim_command:execute(Commands)),
     ?assertEqual("b", erlslim_command:get_symbol(stripped)).
 			  
+call_and_assign_followed_by_use_of_symbol_test() ->
+    Commands = [#make{id = "cas_1", actor = string},
+		#call_and_assign{id = "cas_2",
+				 call = #call{id = "cas_2",
+					      function = strip,
+					      args = [" a,b,a "]},
+				 variable = stripped
+				 },
+		#call{id = "cas_3",
+		      function = tokens,
+		      args = ["$stripped",","]
+		      }
+	       ],
+    ?assertMatch([_,_,
+		  #result{id = "cas_3",
+			  result = ["a","b","a"]}
+		 ],
+		 erlslim_command:execute(Commands)).
+    

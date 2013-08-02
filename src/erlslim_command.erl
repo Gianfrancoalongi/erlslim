@@ -11,7 +11,6 @@ execute(#bye{}=C) ->
 execute(Commands) ->
     lists:map(fun execute_single_command/1, Commands).
 
-
 get_symbol(Symbol) ->
     case table_exists() of 
 	true ->
@@ -26,7 +25,8 @@ execute_single_command(#make{}=C) ->
     store_and_log_result(C#make.id, ok);
 
 execute_single_command(#call{}=C) ->
-    Res = (catch apply(get(module), C#call.function, C#call.args)),
+    Replaced = replace_any_symbol_refs_by_value_lookup(C#call.args),
+    Res = (catch apply(get(module), C#call.function, Replaced)),
     store_and_log_result(C#call.id, Res);
 
 execute_single_command(#call_and_assign{}=C) ->
@@ -47,9 +47,16 @@ create_variable_table_if_needed() ->
 	true ->
 	    ok;
 	false ->
-	    ets:new(?VAR_TABLE, [bag, named_table])
+	    ets:new(?VAR_TABLE, [named_table])
     end.
     
 table_exists() ->
     undefined =/= ets:info(?VAR_TABLE).
 
+replace_any_symbol_refs_by_value_lookup(Args) ->
+    [ lookup_if_symbol(Arg) || Arg <- Args].
+
+lookup_if_symbol([$$|Symbol]) ->
+    get_symbol(list_to_atom(Symbol));
+lookup_if_symbol(Arg) ->
+    Arg.
