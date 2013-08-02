@@ -57,6 +57,6 @@ replace_any_symbol_refs_by_value_lookup(Args) ->
     [ lookup_if_symbol(Arg) || Arg <- Args].
 
 lookup_if_symbol([$$|Symbol]) ->
-    get_symbol(list_to_atom(Symbol));
+    get_symbol(Symbol);
 lookup_if_symbol(Arg) ->
     Arg.

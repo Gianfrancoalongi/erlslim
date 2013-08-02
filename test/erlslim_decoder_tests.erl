@@ -14,7 +14,7 @@ decode_two_lines_test() ->
 			actor = my_module},
 		  #call{id = "scriptTable_0_1",
 			function = aProcessNamedIsStarted,
-			args = ['Bob']}
+			args = ["Bob"]}
 		 ], erlslim_decoder:decode(SlimLine)).
     
 decode_bye_test() ->
@@ -33,7 +33,7 @@ decode_call_and_assign_test() ->
 				   call = #call{id = "scriptTable_13_1",
 						function = getSystemTimeAndDate,
 						args = []},
-				   variable = 'Variable'
+				   variable = "Variable"
 				   }
 		  ],
 		 erlslim_decoder:decode(SlimLine)).

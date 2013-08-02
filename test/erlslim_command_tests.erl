@@ -50,7 +50,7 @@ call_and_assign_followed_by_use_of_symbol_test() ->
 				 call = #call{id = "cas_2",
 					      function = strip,
 					      args = [" a,b,a "]},
-				 variable = stripped
+				 variable = "stripped"
 				 },
 		#call{id = "cas_3",
 		      function = tokens,
